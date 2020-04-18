@@ -19,15 +19,19 @@ class TasksFragment : Fragment() {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_tasks, container, false);
         val tasksListView: ListView = rootView.findViewById(R.id.tasks_list);
-        val tasks = mutableListOf<Task>()
-        tasks.add(Task("task1", TaskPriority.HIGH, true))
-        tasks.add(Task("task2", TaskPriority.HIGH, true))
-        tasks.add(Task("task3", TaskPriority.HIGH, true))
-        tasks.add(Task("task4", TaskPriority.HIGH, true))
-        tasks.add(Task("task4", TaskPriority.HIGH, true))
+        insertDummyValues()
+        val tasks = TaskDatabase.getDatabaseInstance(context!!).taskDao().loadAllTasks()
         val adapter = TaskAdapter(context!!, tasks)
+
         tasksListView.adapter = adapter;
         return rootView
+    }
+    private fun insertDummyValues() {
+        val db = TaskDatabase.getDatabaseInstance(context!!)
+        val task = Task("task 1", TaskPriority.HIGH, false, null);
+        for (i in 1..5) {
+            db.taskDao().insertTask(task)
+        }
     }
 
 }
