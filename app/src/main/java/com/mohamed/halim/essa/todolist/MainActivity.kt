@@ -11,7 +11,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         val tasksFragment =  TasksFragment()
-
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, tasksFragment).commit()
     }
 }

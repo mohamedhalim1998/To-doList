@@ -1,10 +1,11 @@
 package com.mohamed.halim.essa.todolist
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 @Dao
 interface TaskDao {
     @Query("SELECT * FROM task")
-    fun loadAllTasks() : List<Task>;
+    fun loadAllTasks() : LiveData<List<Task>>
     @Query("SELECT * FROM task WHERE id = :id")
     fun loadTaskById(id : Long) : Task;
     @Update(onConflict = OnConflictStrategy.REPLACE)
