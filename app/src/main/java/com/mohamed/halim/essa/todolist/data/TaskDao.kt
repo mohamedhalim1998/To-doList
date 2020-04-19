@@ -1,7 +1,8 @@
-package com.mohamed.halim.essa.todolist
+package com.mohamed.halim.essa.todolist.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+
 @Dao
 interface TaskDao {
     @Query("SELECT * FROM task")
