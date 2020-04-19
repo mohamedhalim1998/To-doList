@@ -38,7 +38,6 @@ class TasksFragment : Fragment() {
             }
 
         })
-        //insertDummyValues()
         return rootView
     }
 
