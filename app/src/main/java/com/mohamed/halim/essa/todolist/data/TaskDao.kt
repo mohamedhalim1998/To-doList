@@ -8,7 +8,7 @@ interface TaskDao {
     @Query("SELECT * FROM task")
     fun loadAllTasks() : LiveData<List<Task>>
     @Query("SELECT * FROM task WHERE id = :id")
-    fun loadTaskById(id : Long) : Task;
+    fun loadTaskById(id : Long) : Task
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateTask(task: Task)
     @Insert
