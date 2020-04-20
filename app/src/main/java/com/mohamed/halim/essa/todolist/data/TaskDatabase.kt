@@ -22,7 +22,7 @@ abstract class TaskDatabase : RoomDatabase() {
                 val instance = databaseBuilder(
                     context.applicationContext,
                     TaskDatabase::class.java, "tasks.db"
-                ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 return instance
             }

@@ -12,6 +12,7 @@ import androidx.navigation.Navigation
 import com.mohamed.halim.essa.todolist.R
 import com.mohamed.halim.essa.todolist.data.Task
 import com.mohamed.halim.essa.todolist.data.TaskDatabase
+import com.mohamed.halim.essa.todolist.data.TaskExecutor
 import com.mohamed.halim.essa.todolist.data.TaskPriority
 import kotlinx.android.synthetic.main.fragment_add_task.*
 
@@ -49,16 +50,7 @@ class AddTaskFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_save_task -> {
-                val db = TaskDatabase.getDatabaseInstance(requireContext())
-                val title: String = taskEditText.text.toString();
-                val priority: TaskPriority = getTaskPriority()
-                val task = Task(
-                    title,
-                    priority,
-                    false,
-                    null
-                )
-                db.taskDao().insertTask(task)
+                saveTask()
                 navController.navigate(R.id.action_addTaskFragment_to_tasksFragment)
                 val imm =
                     requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -75,6 +67,21 @@ class AddTaskFragment : Fragment() {
             "Normal" -> TaskPriority.NORMAL
             "Low" -> TaskPriority.LOW
             else -> TaskPriority.NORMAL
+        }
+    }
+
+    private fun saveTask() {
+
+        val title: String = taskEditText.text.toString();
+        val priority: TaskPriority = getTaskPriority()
+        val task = Task(
+            title,
+            priority,
+            false,
+            null
+        )
+        TaskExecutor.getTaskExecutor().diskIO.execute {
+            TaskDatabase.getDatabaseInstance(requireContext()).taskDao().insertTask(task)
         }
     }
 
