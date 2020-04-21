@@ -26,5 +26,16 @@
         <action
             android:id="@+id/action_addTaskFragment_to_tasksFragment"
             app:destination="@id/tasksFragment" />
+        <argument
+            android:name="task_title"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="task_id"
+            app:argType="long" />
+        <argument
+            android:name="priority"
+            app:argType="com.mohamed.halim.essa.todolist.data.TaskPriority"
+            app:nullable="true" />
     </fragment>
 </navigation>

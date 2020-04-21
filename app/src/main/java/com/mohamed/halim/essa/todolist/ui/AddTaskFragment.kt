@@ -2,6 +2,7 @@ package com.mohamed.halim.essa.todolist.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
@@ -14,16 +15,18 @@ import com.mohamed.halim.essa.todolist.data.Task
 import com.mohamed.halim.essa.todolist.data.TaskDatabase
 import com.mohamed.halim.essa.todolist.data.TaskExecutor
 import com.mohamed.halim.essa.todolist.data.TaskPriority
-import kotlinx.android.synthetic.main.fragment_add_task.*
 
 class AddTaskFragment : Fragment() {
 
     private lateinit var taskEditText: EditText
     private lateinit var prioritySpinner: Spinner
     private lateinit var navController: NavController
+    private var editMode = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        editMode = requireArguments().containsKey("task_title")
+        Log.d("task", arguments.toString())
 
     }
 
@@ -33,9 +36,29 @@ class AddTaskFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val rootView: View = inflater.inflate(R.layout.fragment_add_task, container, false)
-        prioritySpinner = rootView.findViewById<Spinner>(R.id.priority_spinner)
-        taskEditText = rootView.findViewById<EditText>(R.id.task_edit_text)
+        prioritySpinner = rootView.findViewById(R.id.priority_spinner)
+        taskEditText = rootView.findViewById(R.id.task_edit_text)
+        if (editMode) {
+            populateUi()
+        }
         return rootView
+    }
+
+    private fun populateUi() {
+        setPrioritySpinnerItem(requireArguments().getParcelable<TaskPriority>("priority"))
+        taskEditText.setText(requireArguments().getString("task_title"))
+    }
+
+    private fun setPrioritySpinnerItem(taskPriority: TaskPriority?) {
+        if (taskPriority != null) {
+            when (taskPriority) {
+                TaskPriority.HIGH -> prioritySpinner.setSelection(0)
+                TaskPriority.NORMAL -> prioritySpinner.setSelection(1)
+                TaskPriority.LOW -> prioritySpinner.setSelection(2)
+                else -> prioritySpinner.prompt = "Normal"
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -81,7 +104,12 @@ class AddTaskFragment : Fragment() {
             null
         )
         TaskExecutor.getTaskExecutor().diskIO.execute {
-            TaskDatabase.getDatabaseInstance(requireContext()).taskDao().insertTask(task)
+            if (!editMode) {
+                TaskDatabase.getDatabaseInstance(requireContext()).taskDao().insertTask(task)
+            } else {
+                task.id = requireArguments().getLong("task_id")
+                TaskDatabase.getDatabaseInstance(requireContext()).taskDao().updateTask(task)
+            }
         }
     }
 
