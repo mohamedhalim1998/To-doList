@@ -47,7 +47,7 @@ class TasksFragment : Fragment() {
 
         })
 
-        tasksListView.setOnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+        tasksListView.setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
             val bundle: Bundle = bundleOf(
                 "task_title" to adapter.getItem(position)!!.title,
                 "priority" to adapter.getItem(position)!!.priority,
