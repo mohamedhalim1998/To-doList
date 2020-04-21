@@ -1,6 +1,7 @@
 package com.mohamed.halim.essa.todolist.adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.mohamed.halim.essa.todolist.R
 import com.mohamed.halim.essa.todolist.data.Task
 import com.mohamed.halim.essa.todolist.data.TaskDatabase
@@ -25,6 +27,14 @@ class TaskAdapter(context: Context, var tasks: List<Task>) :
         val taskTitleTextView: TextView = rootView.findViewById(R.id.task_title_tv)
         taskTitleTextView.text = current.title
         taskCheckBox.isChecked = current.done
+        taskCheckBox.buttonTintList =
+            ColorStateList.valueOf(
+                when (current.priority) {
+                    TaskPriority.HIGH -> ContextCompat.getColor(context, R.color.high_priority)
+                    TaskPriority.NORMAL -> ContextCompat.getColor(context, R.color.normal_priority)
+                    TaskPriority.LOW -> ContextCompat.getColor(context, R.color.low_priority)
+                }
+            )
         if (taskCheckBox.isChecked) {
             taskTitleTextView.paintFlags =
                 taskTitleTextView.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG)
