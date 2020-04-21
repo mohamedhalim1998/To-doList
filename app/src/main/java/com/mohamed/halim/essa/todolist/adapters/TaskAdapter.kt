@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import android.widget.TextView
 import com.mohamed.halim.essa.todolist.R
 import com.mohamed.halim.essa.todolist.data.Task
 import com.mohamed.halim.essa.todolist.data.TaskDatabase
@@ -21,18 +22,21 @@ class TaskAdapter(context: Context, var tasks: List<Task>) :
             view ?: LayoutInflater.from(context).inflate(R.layout.taks_list_item, parent, false);
         val current = tasks.get(position)
         val taskCheckBox: CheckBox = rootView.findViewById(R.id.task_check_box)
-        taskCheckBox.text = current.title
+        val taskTitleTextView: TextView = rootView.findViewById(R.id.task_title_tv)
+        taskTitleTextView.text = current.title
         taskCheckBox.isChecked = current.done
         if (taskCheckBox.isChecked) {
-            taskCheckBox.paintFlags = taskCheckBox.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG)
+            taskTitleTextView.paintFlags =
+                taskTitleTextView.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG)
         }
         taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                taskCheckBox.paintFlags = taskCheckBox.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG)
+                taskTitleTextView.paintFlags =
+                    taskTitleTextView.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG)
                 updateTask(current.id!!, true)
             } else {
-                taskCheckBox.paintFlags =
-                    (taskCheckBox.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv())
+                taskTitleTextView.paintFlags =
+                    (taskTitleTextView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv())
                 updateTask(current.id!!, false)
             }
         }
