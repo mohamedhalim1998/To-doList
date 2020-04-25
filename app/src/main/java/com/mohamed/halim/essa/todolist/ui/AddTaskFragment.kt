@@ -61,6 +61,17 @@ class AddTaskFragment : Fragment() {
 
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+
+        val delete = menu.findItem(R.id.action_delete_task)
+        if (editMode) {
+            delete.setVisible(true)
+        } else {
+            delete.setVisible(false)
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.add_task_menu, menu)
     }
@@ -74,14 +85,26 @@ class AddTaskFragment : Fragment() {
         when (item.itemId) {
             R.id.action_save_task -> {
                 saveTask()
-                navController.navigate(R.id.action_addTaskFragment_to_tasksFragment)
                 val imm =
                     requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)
+                requireActivity().onBackPressed()
                 return true
+            }
+            R.id.action_delete_task -> {
+                deleteTask()
+                requireActivity().onBackPressed()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteTask() {
+        TaskExecutor.getTaskExecutor().diskIO.execute {
+            val id = requireArguments().getLong("task_id")
+            val task = TaskDatabase.getDatabaseInstance(requireContext()).taskDao().loadTaskById(id)
+            TaskDatabase.getDatabaseInstance(requireContext()).taskDao().deleteTask(task)
+        }
     }
 
     private fun getTaskPriority(): TaskPriority {
